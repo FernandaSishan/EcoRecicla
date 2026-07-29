@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoVision IA – Coleta Seletiva Inteligente</title>
+    <!-- TensorFlow.js + COCO-SSD (modelo leve para navegador) -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.15.0/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3/dist/coco-ssd.min.js"></script>
+    <!-- Fonte Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- ============================================ -->
+    <!-- TELA INICIAL                                 -->
+    <!-- ============================================ -->
+    <div id="tela-inicial">
+        <div class="particles" id="particles"></div>
+        <div class="logo-cetam fade-in">
+            <img src="assets/images/logo-cetam.png" alt="Logo CETAM" id="logo-img" onerror="this.style.display='none'; this.parentElement.textContent='CETAM';">
+            <span class="logo-fallback">CETAM</span>
+        </div>
+        <h1 class="titulo-principal fade-in" style="animation-delay:0.2s">EcoVision IA</h1>
+        <p class="subtitulo fade-in" style="animation-delay:0.4s">Coleta Seletiva Inteligente</p>
+        <p class="descricao-inicial fade-in" style="animation-delay:0.6s">
+            Este projeto utiliza <strong>Inteligência Artificial</strong> para identificar resíduos em tempo real 
+            através da sua webcam, auxiliando na <strong>educação ambiental</strong> e na prática da 
+            <strong>coleta seletiva</strong>.
+        </p>
+        <button class="btn-iniciar fade-in" style="animation-delay:0.8s" onclick="iniciarSistema()">
+            📷 Iniciar Câmera
+        </button>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- LOADING OVERLAY                              -->
+    <!-- ============================================ -->
+    <div class="loading-overlay hidden" id="loading-overlay">
+        <div class="spinner"></div>
+        <p class="loading-text" id="loading-text">Carregando modelo de IA...</p>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- HEADER                                       -->
+    <!-- ============================================ -->
+    <header id="main-header" style="display:none">
+        <div class="header-left">
+            <div class="header-logo">
+                <img src="assets/images/logo-cetam.png" alt="CETAM" id="header-logo-img" onerror="this.style.display='none'; this.parentElement.querySelector('.header-logo-fallback').style.display='flex';">
+                <span class="header-logo-fallback" style="display:none;">CETAM</span>
+            </div>
+            <div>
+                <div class="header-title">EcoVision IA</div>
+                <div class="header-subtitle">Coleta Seletiva Inteligente</div>
+            </div>
+        </div>
+        <nav class="nav-links">
+            <a href="#" class="active" onclick="mostrarTela('principal')">🎥 Detecção</a>
+            <a href="#" onclick="mostrarTela('sobre')">ℹ️ Sobre o Projeto</a>
+        </nav>
+    </header>
+
+    <!-- ============================================ -->
+    <!-- MAIN CONTENT                                 -->
+    <!-- ============================================ -->
+    <main id="main-content" style="display:none">
+
+        <!-- TELA PRINCIPAL: DETECÇÃO -->
+        <div id="tela-principal" class="active">
+            <div class="container">
+                <div class="detection-layout">
+                    <!-- Área da Câmera -->
+                    <div class="camera-container slide-in">
+                        <div class="camera-header">
+                            <div class="camera-status">
+                                <div class="status-dot" id="status-dot"></div>
+                                <span id="status-text">Câmera desligada</span>
+                            </div>
+                            <span class="model-badge">COCO-SSD + TensorFlow.js</span>
+                        </div>
+                        <div class="video-wrapper">
+                            <video id="webcam" autoplay playsinline muted></video>
+                            <canvas id="canvas-overlay"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Painel de Informações -->
+                    <div class="info-panel">
+                        <div class="info-card slide-in" style="animation-delay:0.1s">
+                            <div class="info-card-title">Objeto Detectado</div>
+                            <div class="info-card-value" id="objeto-detectado">Aguardando...</div>
+                            <div class="confidence-bar">
+                                <div class="confidence-fill" id="confidence-fill" style="width:0%"></div>
+                            </div>
+                            <div class="confidence-text" id="confidence-text">0% confiança</div>
+                        </div>
+
+                        <div class="info-card slide-in" style="animation-delay:0.2s">
+                            <div class="info-card-title">Material</div>
+                            <div class="info-card-value" id="material-tipo">—</div>
+                        </div>
+
+                        <div class="info-card slide-in" style="animation-delay:0.3s">
+                            <div class="info-card-title">Lixeira Correta</div>
+                            <div class="lixeira-indicator" id="lixeira-indicator">
+                                <div class="lixeira-cor" style="background:rgba(255,255,255,0.2)"></div>
+                                <span class="lixeira-nome" id="lixeira-nome">—</span>
+                            </div>
+                        </div>
+
+                        <div class="info-card slide-in" style="animation-delay:0.4s">
+                            <div class="info-card-title">Reciclável</div>
+                            <div class="reciclavel-badge reciclavel-nao" id="reciclavel-badge">
+                                ❓ Aguardando detecção
+                            </div>
+                        </div>
+
+                        <div class="info-card slide-in" style="animation-delay:0.5s">
+                            <div class="info-card-title">Tempo de Decomposição</div>
+                            <div class="tempo-decomposicao" id="tempo-decomposicao">—</div>
+                        </div>
+
+                        <div class="info-card slide-in" style="animation-delay:0.6s">
+                            <div class="info-card-title">💡 Curiosidade Ambiental</div>
+                            <p class="curiosidade-text" id="curiosidade-texto">
+                                Aponte a câmera para um objeto para descobrir informações sobre seu impacto ambiental.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TELA SOBRE O PROJETO -->
+        <div id="tela-sobre">
+            <div class="container">
+                <div class="sobre-hero">
+                    <div class="logo-cetam" style="margin:0 auto 20px;width:80px;height:80px;font-size:32px;">
+                        <img src="assets/images/logo-cetam.png" alt="Logo CETAM" style="width:100%;height:100%;object-fit:contain;border-radius:16px;" onerror="this.style.display='none'; this.parentElement.textContent='CETAM';">
+                    </div>
+                    <h1>Sobre o Projeto</h1>
+                    <p>Conheça a tecnologia por trás do EcoVision IA e a importância da coleta seletiva.</p>
+                </div>
+
+                <div class="sobre-grid">
+                    <div class="sobre-card">
+                        <div class="sobre-card-icon" style="background:linear-gradient(135deg,#667eea,#764ba2)">🧠</div>
+                        <h3>O que é Inteligência Artificial?</h3>
+                        <p>IA é a capacidade de máquinas de simular processos cognitivos humanos. No EcoVision IA, utilizamos redes neurais profundas treinadas com milhares de imagens para reconhecer objetos do cotidiano.</p>
+                    </div>
+                    <div class="sobre-card">
+                        <div class="sobre-card-icon" style="background:linear-gradient(135deg,#f093fb,#f5576c)">👁️</div>
+                        <h3>O que é o YOLO?</h3>
+                        <p>YOLO (You Only Look Once) é um dos algoritmos de detecção de objetos mais rápidos do mundo. Analisa a imagem inteira em uma única passada, ideal para aplicações em tempo real.</p>
+                    </div>
+                    <div class="sobre-card">
+                        <div class="sobre-card-icon" style="background:linear-gradient(135deg,#4facfe,#00f2fe)">📷</div>
+                        <h3>Detecção em Tempo Real</h3>
+                        <p>O sistema captura frames da webcam, processa-os via IA diretamente no navegador e exibe resultados instantaneamente. Todo o processamento é local, garantindo privacidade.</p>
+                    </div>
+                    <div class="sobre-card">
+                        <div class="sobre-card-icon" style="background:linear-gradient(135deg,#43e97b,#38f9d7)">♻️</div>
+                        <h3>Importância da Coleta Seletiva</h3>
+                        <p>A coleta seletiva separa resíduos recicláveis do lixo comum, reduzindo poluição, economizando recursos naturais e protegendo a biodiversidade da Amazônia.</p>
+                    </div>
+                    <div class="sobre-card">
+                        <div class="sobre-card-icon" style="background:linear-gradient(135deg,#fa709a,#fee140)">🌍</div>
+                        <h3>Tecnologia e Meio Ambiente</h3>
+                        <p>Ferramentas como o EcoVision IA democratizam o acesso à educação ambiental, transformando o aprendizado em uma experiência interativa e acessível.</p>
+                    </div>
+                    <div class="sobre-card">
+                        <div class="sobre-card-icon" style="background:linear-gradient(135deg,#a8edea,#fed6e3)">🚀</div>
+                        <h3>Execução 100% no Navegador</h3>
+                        <p>Sem instalação, backend ou banco de dados. Usando TensorFlow.js, o modelo é carregado e executado diretamente no navegador do visitante.</p>
+                    </div>
+                </div>
+
+                <div class="equipe-section">
+                    <h2>👥 Equipe do Projeto</h2>
+                    <div class="equipe-grid">
+                        <div class="equipe-member">
+                            <div class="equipe-member-name">Nome do Aluno 1</div>
+                            <div class="equipe-member-role">Desenvolvedor IA</div>
+                        </div>
+                        <div class="equipe-member">
+                            <div class="equipe-member-name">Nome do Aluno 2</div>
+                            <div class="equipe-member-role">Engenheiro de Dados</div>
+                        </div>
+                        <div class="equipe-member">
+                            <div class="equipe-member-name">Nome do Aluno 3</div>
+                            <div class="equipe-member-role">Designer UI/UX</div>
+                        </div>
+                        <div class="equipe-member">
+                            <div class="equipe-member-name">Nome do Orientador</div>
+                            <div class="equipe-member-role">Professor Orientador</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ============================================ -->
+    <!-- RODAPÉ                                       -->
+    <!-- ============================================ -->
+    <footer id="main-footer" style="display:none">
+        <p><strong>Projeto desenvolvido para a Mostra Tecnológica do CETAM</strong></p>
+        <p>Curso Técnico em Inteligência Artificial</p>
+        <p>EcoVision IA – Coleta Seletiva Inteligente</p>
+    </footer>
+
+    <!-- Scripts modulares -->
+    <script src="js/data.js"></script>
+    <script src="js/detector.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
