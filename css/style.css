@@ -4,14 +4,15 @@
    ============================================ */
 
 /* ---------- VARIÁVEIS ---------- */
-:root {
-    --cetam-blue: #1a3a5c;
-    --cetam-red: #c41e3a;
-    --eco-green: #2d8a4e;
-    --eco-green-light: #4caf50;
-    --glass-bg: rgba(255, 255, 255, 0.08);
-    --glass-border: rgba(255, 255, 255, 0.15);
-    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+:root{
+    --cetam-blue:#0F4C81;
+    --eco-green:#118C4F;
+    --eco-green-light:#28C76F;
+    --eco-dark:#0B2E13;
+
+    --glass-bg:rgba(255,255,255,.08);
+    --glass-border:rgba(255,255,255,.15);
+    --glass-shadow:0 15px 45px rgba(0,0,0,.35);
 }
 
 /* ---------- RESET & BASE ---------- */
@@ -82,22 +83,35 @@ body {
 }
 
 /* Logo CETAM */
-.logo-cetam {
-    width: 120px;
-    height: 120px;
-    background: linear-gradient(135deg, var(--cetam-blue), var(--cetam-red));
-    border-radius: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 48px;
-    font-weight: 800;
-    color: white;
-    margin-bottom: 30px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
-    animation: pulse 2s infinite;
-    overflow: hidden;
-    position: relative;
+.logo-cetam{
+    width:220px;
+    height:220px;
+    background:#ffffff;
+    border-radius:35px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    margin-bottom:35px;
+
+    overflow:hidden;
+
+    box-shadow:
+        0 20px 60px rgba(0,0,0,.45),
+        0 0 35px rgba(40,199,111,.15);
+
+    animation:pulse 3s infinite;
+}
+
+.logo-cetam img{
+    width:92%;
+    height:92%;
+    object-fit:contain;
+}
+
+.logo-fallback{
+    display:none;
 }
 
 .logo-cetam img {
@@ -245,18 +259,22 @@ header {
     gap: 15px;
 }
 
-.header-logo {
-    width: 45px;
-    height: 45px;
-    background: linear-gradient(135deg, var(--cetam-blue), var(--cetam-red));
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 800;
-    font-size: 18px;
-    overflow: hidden;
-    position: relative;
+.header-logo{
+
+    width:65px;
+    height:65px;
+
+    background:#fff;
+
+    border-radius:18px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    overflow:hidden;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.35);
 }
 
 .header-logo img {
@@ -409,13 +427,22 @@ main {
     gap: 20px;
 }
 
-.info-card {
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
-    border-radius: 20px;
-    padding: 25px;
-    box-shadow: var(--glass-shadow);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+.info-card{
+
+    background:rgba(255,255,255,.08);
+
+    backdrop-filter:blur(18px);
+
+    border:1px solid rgba(255,255,255,.10);
+
+    border-radius:22px;
+
+    padding:25px;
+
+    transition:.35s;
+
+    box-shadow:0 10px 35px rgba(0,0,0,.30);
+
 }
 
 .info-card:hover {
