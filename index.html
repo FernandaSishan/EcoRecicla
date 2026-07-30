@@ -10,6 +10,111 @@
     <!-- Fonte Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* ============================================
+           BOTÕES DA TELA INICIAL — VISUAL APRIMORADO
+           ============================================ */
+
+        .botoes-iniciais {
+            width: min(520px, 90%);
+            margin: 28px auto 0;
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+        }
+
+        .botoes-iniciais button {
+            min-height: 56px;
+            padding: 0 25px;
+            border-radius: 16px;
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: .1px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: transform .25s ease, box-shadow .25s ease,
+                        background .25s ease, border-color .25s ease;
+        }
+
+        .botoes-iniciais button:hover {
+            transform: translateY(-3px);
+        }
+
+        .botoes-iniciais button:active {
+            transform: translateY(-1px) scale(.98);
+        }
+
+        .botoes-iniciais .btn-iniciar {
+            margin: 0;
+            flex: 1.15;
+            border: 1px solid rgba(255,255,255,.25);
+            box-shadow: 0 10px 28px rgba(0,0,0,.18);
+        }
+
+        .btn-sobre-inicial {
+            flex: 1;
+            border: 1px solid rgba(255,255,255,.32);
+            background: rgba(255,255,255,.10);
+            color: #fff;
+            box-shadow: 0 8px 24px rgba(0,0,0,.12);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .btn-sobre-inicial:hover {
+            background: rgba(255,255,255,.18);
+            border-color: rgba(255,255,255,.55);
+            box-shadow: 0 12px 30px rgba(0,0,0,.20);
+        }
+
+        .btn-icone {
+            font-size: 20px;
+            line-height: 1;
+        }
+
+        .dica-inicial {
+            width: min(520px, 90%);
+            margin: 18px auto 0;
+            padding: 11px 18px;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: 1px solid rgba(255,255,255,.13);
+            border-radius: 999px;
+            background: rgba(255,255,255,.055);
+            color: rgba(255,255,255,.78);
+            font-size: 12px;
+            line-height: 1.4;
+            text-align: center;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        .dica-inicial span:first-child {
+            font-size: 15px;
+        }
+
+        @media (max-width: 560px) {
+            .botoes-iniciais {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .botoes-iniciais button {
+                width: 100%;
+            }
+
+            .dica-inicial {
+                border-radius: 16px;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- ============================================ -->
@@ -18,7 +123,7 @@
     <div id="tela-inicial">
         <div class="particles" id="particles"></div>
         <div class="logo-cetam fade-in">
-            <img src="img/logo-cetam.png" alt="Logo CETAM" id="logo-img" onerror="this.style.display='none'; this.parentElement.textContent='CETAM';">
+            <img src="img/logo-eco.png" alt="Logo CETAM" id="logo-img" onerror="this.style.display='none'; this.parentElement.textContent='CETAM';">
             <span class="logo-fallback">CETAM</span>
         </div>
         <h1 class="titulo-principal fade-in" style="animation-delay:0.2s">EcoVision IA</h1>
@@ -28,9 +133,28 @@
             através da sua webcam, auxiliando na <strong>educação ambiental</strong> e na prática da 
             <strong>coleta seletiva</strong>.
         </p>
-        <button class="btn-iniciar fade-in" style="animation-delay:0.8s" onclick="iniciarSistema()">
-            📷 Iniciar Câmera
-        </button>
+        <div class="botoes-iniciais fade-in" style="animation-delay:0.8s">
+            <button class="btn-iniciar" onclick="iniciarSistema()">
+                <span class="btn-icone">📷</span>
+                <span>Iniciar Câmera</span>
+            </button>
+
+            <button class="btn-sobre-inicial" onclick="abrirSobreInicial()">
+                <span class="btn-icone">ℹ️</span>
+                <span>Sobre o Projeto</span>
+            </button>
+           
+        </div>
+
+        <div class="dica-inicial fade-in" style="animation-delay:1.1s">
+            <span>♻️</span>
+            <span>Aprenda, detecte e ajude o meio ambiente com IA.</span>
+        </div>
+
+         <div class="logo-cetam-inferior">
+    <img src="img/logo-cetam.png" alt="CETAM">
+    <span>Centro de Educação Tecnológica do Amazonas</span>
+</div>
     </div>
 
     <!-- ============================================ -->
@@ -47,7 +171,7 @@
     <header id="main-header" style="display:none">
         <div class="header-left">
             <div class="header-logo">
-                <img src="img/logo-cetam.png" alt="CETAM" id="header-logo-img" onerror="this.style.display='none'; this.parentElement.querySelector('.header-logo-fallback').style.display='flex';">
+                <img src="img/logo-eco.png" alt="CETAM" id="header-logo-img" onerror="this.style.display='none'; this.parentElement.querySelector('.header-logo-fallback').style.display='flex';">
                 <span class="header-logo-fallback" style="display:none;">CETAM</span>
             </div>
             <div>
@@ -137,7 +261,7 @@
             <div class="container">
                 <div class="sobre-hero">
                     <div class="logo-cetam" style="margin:0 auto 20px;width:80px;height:80px;font-size:32px;">
-                        <img src="assets/images/logo-cetam.png" alt="Logo CETAM" style="width:100%;height:100%;object-fit:contain;border-radius:16px;" onerror="this.style.display='none'; this.parentElement.textContent='CETAM';">
+                        <img src="/img/logo-eco.png" alt="Logo CETAM" style="width:100%;height:100%;object-fit:contain;border-radius:16px;" onerror="this.style.display='none'; this.parentElement.textContent='CETAM';">
                     </div>
                     <h1>Sobre o Projeto</h1>
                     <p>Conheça a tecnologia por trás do EcoVision IA e a importância da coleta seletiva.</p>
@@ -221,6 +345,30 @@
         <p>Curso Técnico em Inteligência Artificial</p>
         <p>EcoVision IA – Coleta Seletiva Inteligente</p>
     </footer>
+
+    <script>
+        function abrirSobreInicial() {
+            const telaInicial = document.getElementById('tela-inicial');
+            const header = document.getElementById('main-header');
+            const main = document.getElementById('main-content');
+            const footer = document.getElementById('main-footer');
+
+            if (telaInicial) telaInicial.style.display = 'none';
+            if (header) header.style.display = 'flex';
+            if (main) main.style.display = 'block';
+            if (footer) footer.style.display = 'block';
+
+            if (typeof mostrarTela === 'function') {
+                mostrarTela('sobre');
+            } else {
+                document.querySelectorAll('#main-content > div').forEach(tela => {
+                    tela.classList.remove('active');
+                });
+                const sobre = document.getElementById('tela-sobre');
+                if (sobre) sobre.classList.add('active');
+            }
+        }
+    </script>
 
     <!-- Scripts modulares -->
     <script src="js/data.js"></script>
